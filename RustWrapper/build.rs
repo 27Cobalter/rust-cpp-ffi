@@ -42,10 +42,12 @@ fn main() {
     let dll_name = format!("{}{}.{}", &lib_pref, &link_lib, &lib_suff);
     let dll_src = PathBuf::from(&cmake_dir).join("bin").join(&dll_name);
     let dll_dst = PathBuf::from("target").join(&profile).join(&dll_name);
+
+    println!("cargo:rerun-if-changed={}", dll_src.display());
     println!(
         "cargo:warning=Copy Dll {} -> {}",
-        dll_src.to_str().unwrap(),
-        dll_dst.to_str().unwrap()
+        dll_src.display(),
+        dll_dst.display()
     );
     fs::copy(dll_src, dll_dst).expect("Failed to copy dll.");
 }
