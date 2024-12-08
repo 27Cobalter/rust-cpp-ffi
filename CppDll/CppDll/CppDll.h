@@ -51,12 +51,16 @@ struct Data2D {
   uint8_t* data;
 };
 
+typedef void (*OnDataTypeChanged)(const DataType prev, const DataType next);
+
 void HelloWorld();
 CppResult Initialize(const InitParam* param);
 CppResult SetDataType(const DataType type);
 CppResult GetData(DataBase* data);
 CppResult GetDataArray(DataBase*** data, int32_t* size);
 CppResult PrintData(const DataBase* data);
+CppResult RegisterCallback(OnDataTypeChanged callback);
+CppResult UnRegisterCallback(OnDataTypeChanged callback);
 
 } // extern "C"
 #pragma pack()

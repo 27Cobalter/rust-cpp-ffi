@@ -4,6 +4,10 @@
 
 #include <CppDll.h>
 
+void Callback(const DataType prev, const DataType next){
+  std::println(">>> DataType Changed! {} -> {}", static_cast<int32_t>(prev), static_cast<int32_t>(next));
+}
+
 auto main() -> int {
   InitParam init{.size     = sizeof(InitParam),
                  .int_32   = std::numeric_limits<int32_t>::min() / 2,
@@ -19,6 +23,7 @@ auto main() -> int {
   HelloWorld();
   std::println("Initialize");
   auto ret  = Initialize(&init);
+  RegisterCallback(Callback);
   ret       = SetDataType(DataType::DataType_1D);
   std::println("");
   std::println("GetData");

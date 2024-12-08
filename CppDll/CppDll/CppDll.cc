@@ -11,12 +11,15 @@ std::vector<std::unique_ptr<uint8_t[]>> data_buffer;
 std::vector<DataBase*> base_buffer;
 std::vector<Data1D> data1d_buffer;
 std::vector<Data2D> data2d_buffer;
+std::vector<OnDataTypeChanged> callback_buffer;
 
 void HelloWorld() {
   std::println("HelloWorld");
 }
 
 CppResult Initialize(const InitParam* param) {
+  std::println("size = {}", param->size);
+
   if (param->size != sizeof(InitParam)) {
     assert(false);
     return CppResult::CppResult_InvalidParameter;
@@ -37,12 +40,19 @@ CppResult Initialize(const InitParam* param) {
 }
 
 CppResult SetDataType(const DataType type) {
+  auto old_type = data_type;
   data_type = type;
+
+  for(auto func : callback_buffer){
+    func(old_type, type);
+  }
 
   return CppResult::CppResult_Success;
 }
 
 CppResult GetData(DataBase* data) {
+  std::println("size = {}", data->size);
+
   data_buffer.clear();
 
   constexpr int32_t data_size = 1024;
@@ -142,6 +152,8 @@ CppResult GetDataArray(DataBase*** data, int32_t* size) {
 }
 
 CppResult PrintData(const DataBase* data) {
+    std::println("{:16s}: {}", "size", data->size);
+
   if (data->size == sizeof(DataBase)) {
     std::println("{:16s}: {}", "size", data->size);
     std::println("{:16s}: {}", "type", static_cast<int32_t>(data->type));
@@ -170,7 +182,20 @@ CppResult PrintData(const DataBase* data) {
       std::println("...");
     }
     std::println("]");
+  } else {
+    assert(false);
   }
+
+  return CppResult::CppResult_Success;
+}
+
+CppResult RegisterCallback(OnDataTypeChanged callback)
+{
+  callback_buffer.push_back(callback);
+
+  return CppResult::CppResult_Success;
+}
+CppResult UnRegisterCallback(OnDataTypeChanged callback){
 
   return CppResult::CppResult_Success;
 }
