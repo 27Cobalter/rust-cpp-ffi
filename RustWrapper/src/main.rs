@@ -51,6 +51,7 @@ fn main() {
         println!();
         println!("size : {}", size);
         let d_array: &[*const DataBase] = slice::from_raw_parts(d_array, size);
+
         for (i, &d) in d_array.iter().enumerate() {
             println!();
             println!(">> {}", i);
@@ -82,6 +83,22 @@ fn main() {
             println!();
             println!(">> {}", i);
             PrintData(d);
+        }
+
+        println!("Read Unaligned");
+
+        for &d in d_array.iter() {
+            let aa = (d as *const Data1D).read_unaligned();
+            let s = aa.size;
+            let t = aa.data_type as u32;
+            let x = aa.x;
+            // let y = aa.y;
+            let data = aa.data;
+            println!("size={}", s);
+            println!("type={}", t);
+            println!("x={}", x);
+            // println!("{}", y);
+            println!("data={:?}", data);
         }
     }
 }
