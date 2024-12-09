@@ -88,6 +88,7 @@ fn main() {
         println!("Read Unaligned");
 
         for &d in d_array.iter() {
+            // unsafe cast
             let aa = (d as *const Data1D).read_unaligned();
             let s = aa.size;
             let t = aa.data_type as u32;
